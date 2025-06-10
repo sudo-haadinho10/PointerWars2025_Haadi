@@ -16,17 +16,18 @@ CFLAGS = -Wall -Wextra -Werror
 COMPILER_OPTIMIZATIONS = -O3 -g
 
 # Target executable name
-TARGET = ll_output.out
+TARGET = linkedlist_output.out
 
 #Source files
 SRCS= linked_list.c 
+
 
 #Object files
 #LINKED_LIST_OBJECT_FILES = linked_list.o
 
 # Functional testing support
-FUNCTIONAL_TEST_SOURCE_FILES := linked_list_test_program.c
-FUNCTIONAL_TEST_OBJECT_FILES := linked_list_test_program.o
+FUNCTIONAL_TEST_SOURCE_FILES := linked_list_test_program_official.c
+FUNCTIONAL_TEST_OBJECT_FILES := linked_list_test_program_official.o
 
 # Default rule to build the target
 all: $(TARGET)
