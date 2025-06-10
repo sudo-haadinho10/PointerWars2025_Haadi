@@ -196,11 +196,11 @@ int main(void) {
 	signal(SIGALRM,gracefully_exit_on_suspected_infinite_loop);
 	// Setup instrumented memory allocation/deallocation.
 	
-	if(linked_list_register_malloc(&instrumented_malloc)){
+	if(!linked_list_register_malloc(&instrumented_malloc)){
 		fprintf(stderr, "Failed to register instrumented malloc\n");	
 		return 1;
 	}
-	if(linked_list_register_free(&instrumented_free)){
+	if(!linked_list_register_free(&instrumented_free)){
 		fprintf(stderr,"Failed to register instrumented free\n");
 		return 1;
 	}
