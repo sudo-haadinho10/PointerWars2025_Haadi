@@ -21,6 +21,8 @@ TARGET = linkedlist_output.out
 #Source files
 SRCS= linked_list.c 
 
+#Object files (replace .c with .o)
+#OBJS = $(SRCS:.c=.o)
 
 #Object files
 #LINKED_LIST_OBJECT_FILES = linked_list.o
@@ -39,4 +41,4 @@ $(TARGET): $(OBJS)
 
 #Clean up build files
 clean:
-	rm -f $(FUNCTIONAL_TEST_OBJECT_FILES)
+	rm -f $(TARGET)

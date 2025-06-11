@@ -47,8 +47,8 @@ bool linked_list_delete(struct linked_list *ll) {
 		free_fptr(temp);
 		ll->size-=1;
 	}
-	ll->head=NULL;
-		
+	ll->head=NULL; 
+	free_fptr(ll);	
 	return true;
 }
 
