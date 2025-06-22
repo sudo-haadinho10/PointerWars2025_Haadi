@@ -16,7 +16,7 @@ CFLAGS = -Wall -Wextra -Werror
 COMPILER_OPTIMIZATIONS = -O3 -g
 
 # Target executable name
-TARGET = linkedlist_output.out
+TARGET = linkedlist_output2.out
 
 #Source files
 SRCS= linked_list.c 
@@ -27,9 +27,13 @@ SRCS= linked_list.c
 #Object files
 #LINKED_LIST_OBJECT_FILES = linked_list.o
 
+#Specify what to test
+#
+FUNCTIONAL_TEST_COMPILER_DEFINES := -DTEST_LINKED_LIST
+
 # Functional testing support
-FUNCTIONAL_TEST_SOURCE_FILES := linked_list_test_program_official.c
-FUNCTIONAL_TEST_OBJECT_FILES := linked_list_test_program_official.o
+FUNCTIONAL_TEST_SOURCE_FILES := linked_list_test2.c
+#FUNCTIONAL_TEST_OBJECT_FILES := linked_list_test_program_official.o
 
 # Default rule to build the target
 all: $(TARGET)
@@ -37,7 +41,7 @@ all: $(TARGET)
 #Link object files to create the executable
 
 $(TARGET): $(OBJS)
-	$(CC) $(CFLAGS) $(COMPILER_OPTIMIZATIONS) -o $(TARGET) $(FUNCTIONAL_TEST_SOURCE_FILES) $(SRCS) 
+	$(CC) $(CFLAGS) $(COMPILER_OPTIMIZATIONS) $(FUNCTIONAL_TEST_COMPILER_DEFINES) -o $(TARGET) $(FUNCTIONAL_TEST_SOURCE_FILES) $(SRCS) 
 
 #Clean up build files
 clean:

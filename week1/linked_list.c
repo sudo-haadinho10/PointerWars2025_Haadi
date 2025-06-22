@@ -122,7 +122,7 @@ bool linked_list_insert_end(struct linked_list *ll,unsigned int data) {
 	//curr->next=temp;
 	//
 	//
-	//O(1)
+	//O(k) time complexity
 	ll->tail->next=temp;
 	temp->prev=ll->tail;
 	ll->tail=temp;
@@ -209,19 +209,21 @@ bool linked_list_insert(struct linked_list *ll,	size_t index,unsigned int data) 
 
 	size_t tmpSize = (ll->size/2);
 
+	//Case 3:Trying to optimize my existing O(n) approach by iterating from the ll->head if index <=(ll->size/2)
+
 	if(index<=tmpSize) {
 	size_t tempindex=1;
 	struct node *curr=ll->head;
 	struct node *before=ll->head;
 	while(tempindex<index+1) {
-		if(curr->next==NULL) { 
+		/*if(curr->next==NULL) { 
 			//Case 3: Handling insertion if we reach the end of linked list
 			linked_list_insert_end(ll,data); 
 			free_fptr(temp);
 			temp=NULL;			
 			return true;
-		}
-		//Case 4 Normal Insertion
+		}*/
+		//
 		//
 		before=curr;
 		curr=curr->next;
@@ -234,31 +236,32 @@ bool linked_list_insert(struct linked_list *ll,	size_t index,unsigned int data) 
 	ll->size+=1;
 	}
 
+	//Case 4:Trying to optimize my existing O(n) approach by iterating from ll->tail if index >(ll/size/2)
+
 	else {
 		size_t tempindex=ll->size;
 		struct node *curr=ll->tail;
 		struct node *before=ll->tail;
 		while(tempindex>index) {
-			if(curr->prev==NULL) {
+			/*if(curr->prev==NULL) {
 				linked_list_insert_front(ll,data);
 				free_fptr(temp);
 				temp=NULL;
 				return true;
-			}
+			}*/
 			
-			before=curr;
-			curr=curr->prev;
+			curr=before;
+			before=before->prev;
 			tempindex-=1;
 		}
-		curr->next=temp;
-		temp->prev=curr;
-		temp->next=before;
-		before->prev=temp;
+		before->next=temp;
+		temp->prev=before;
+		temp->next=curr;
+		curr->prev=temp;
 		ll->size+=1;
 	}
 	return true;
 }
-
 // Finds the first occurrence of data and returns its index.
 // \param ll   : Pointer to linked_list.
 // \param data : Data to find.
@@ -341,6 +344,8 @@ bool linked_list_remove(struct linked_list *ll,size_t index) {
 	}
 	size_t tmpSize= ll->size/2;
 	size_t tmpIndex=ll->size-1;
+
+	//Case 3: Trying to optimize and speedup my existing O(n) approach by iterating from ll->head if target index if less than or equal to ll->size/2
 	if(index<=tmpSize) {
 		while(index>0) {
 			/*if(curr==NULL) { 
@@ -355,6 +360,8 @@ bool linked_list_remove(struct linked_list *ll,size_t index) {
 		free_fptr(curr);
 		ll->size-=1;
 	}
+	//Case 4:Iterate from ll->tail if index >(ll->size/2)
+	//
 	else {
 		curr=ll->tail;
 		before=curr->prev;
