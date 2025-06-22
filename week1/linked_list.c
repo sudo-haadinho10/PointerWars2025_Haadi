@@ -25,6 +25,7 @@ struct linked_list * linked_list_create(void) {
 		return NULL;
 	}
 	l1->head=NULL;
+	l1->tail=NULL;
 	l1->size=0;
 	return l1;
 }
@@ -41,14 +42,18 @@ bool linked_list_delete(struct linked_list *ll) {
 	}
 	struct node *curr=ll->head;
 	struct node *temp;
-	while(curr!=NULL) {
+	while(curr!=ll->tail) {
 		temp=curr;
 		curr=curr->next;
 		free_fptr(temp);
+		curr->prev=NULL;
 		ll->size-=1;
 	}
+	free(ll->tail);
+	ll->tail=NULL;
 	ll->head=NULL; 
-	free_fptr(ll);	
+	free_fptr(ll);
+	ll=NULL;
 	return true;
 }
 
@@ -98,22 +103,29 @@ bool linked_list_insert_end(struct linked_list *ll,unsigned int data) {
 	struct node *temp=malloc_fptr(sizeof(struct node));
 	temp->data=data;
 	temp->next=NULL;
-	
+	temp->prev=NULL;
 	//Case 1: Empty linked_list
 	//
 	if(ll->head==NULL) {
+		ll->tail=temp;
 		ll->head=temp;
 		ll->size+=1;
 		return true;
 	}
-	struct node *curr=ll->head;
+	//struct node *curr=ll->head;
 
 	//Case 2 Non Empty Linked Lists
 	//
-	while(curr->next!=NULL) { 
-		curr=curr->next;
-	}
-	curr->next=temp;
+	//while(curr->next!=NULL) { 
+	//	curr=curr->next;
+	//}
+	//curr->next=temp;
+	//
+	//
+	//O(1)
+	ll->tail->next=temp;
+	temp->prev=ll->tail;
+	ll->tail=temp;
 	ll->size+=1;
 	return true;
 }
@@ -133,19 +145,22 @@ bool linked_list_insert_front(struct linked_list *ll,unsigned int data) {
         }
 	struct node *temp = malloc_fptr(sizeof(struct node));
 	temp->data=data;
-
 	//Case 1: Empty linked_list
 	//
 	if(ll->head==NULL) {
 		temp->next=NULL;
+		temp->prev=NULL;
 		ll->head=temp;
+		ll->tail=temp;
 		ll->size+=1;
 		return true;
 	}
 
 	//Case 2: Non Empty linked_list
 	//
+	ll->head->prev=temp;
 	temp->next=ll->head;
+	temp->prev=NULL;
 	ll->head=temp;
 	ll->size+=1;
 	return true;
@@ -181,24 +196,29 @@ bool linked_list_insert(struct linked_list *ll,	size_t index,unsigned int data) 
 	//Case 2: If the index specified is greater than ll->size,
 	//        the default behaviour would be to insert the new element at the end of the linked list
 	//
-	if(index>ll->size){
+	if(index>=ll->size){
 		return linked_list_insert_end(ll,data);
 	}
-	
+
+	struct node *temp=malloc_fptr(sizeof(struct node));
+        if(!temp){
+                return false; //Memory allocation failure
+        }
+        temp->data=data;
+        temp->next=NULL;
+
+	size_t tmpSize = (ll->size/2);
+
+	if(index<=tmpSize) {
 	size_t tempindex=1;
 	struct node *curr=ll->head;
 	struct node *before=ll->head;
-	struct node *temp=malloc_fptr(sizeof(struct node));
-	if(!temp){
-		return false; //Memory allocation failure
-	}
-	temp->data=data;
-	temp->next=NULL;
 	while(tempindex<index+1) {
 		if(curr->next==NULL) { 
 			//Case 3: Handling insertion if we reach the end of linked list
 			linked_list_insert_end(ll,data); 
-									
+			free_fptr(temp);
+			temp=NULL;			
 			return true;
 		}
 		//Case 4 Normal Insertion
@@ -209,7 +229,33 @@ bool linked_list_insert(struct linked_list *ll,	size_t index,unsigned int data) 
 	}
 	before->next=temp;
 	temp->next=curr;
+	temp->prev=before;
+	curr->prev=temp;
 	ll->size+=1;
+	}
+
+	else {
+		size_t tempindex=ll->size;
+		struct node *curr=ll->tail;
+		struct node *before=ll->tail;
+		while(tempindex>index) {
+			if(curr->prev==NULL) {
+				linked_list_insert_front(ll,data);
+				free_fptr(temp);
+				temp=NULL;
+				return true;
+			}
+			
+			before=curr;
+			curr=curr->prev;
+			tempindex-=1;
+		}
+		curr->next=temp;
+		temp->prev=curr;
+		temp->next=before;
+		before->prev=temp;
+		ll->size+=1;
+	}
 	return true;
 }
 
@@ -233,10 +279,15 @@ size_t linked_list_find(struct linked_list *ll,unsigned int data) {
 	}
 	while(iter->current_node!=NULL) {
 		if(iter->data==data) {
-			return iter->current_index;
+			size_t tempidx = iter->current_index;
+			free_fptr(iter); //dangling ptr
+                        iter=NULL;
+			return tempidx;
 		}
 		linked_list_iterate(iter);
 	}
+	free_fptr(iter);
+	iter=NULL;
 	return SIZE_MAX;
 }
 
@@ -260,45 +311,67 @@ bool linked_list_remove(struct linked_list *ll,size_t index) {
 
 	//Case 1: Invalid index size
 	//
-	if(index>ll->size){ 
+	if(index>=ll->size){ 
 		return false;
 	}
 
 
-	struct node *curr=ll->head;	
-	struct node *before=malloc_fptr(sizeof(struct node));
-	
+	struct node *curr=ll->head;
 	//Case 1 Removal in case of a single element in the linked list
 	//
 	if(index==0 && curr->next==NULL) {
 		free_fptr(curr);
                 ll->head=NULL;
+		ll->tail=NULL;
 		ll->size-=1;
                 return true;
         }
 	//Case 2 Removal of the initial element in a linked list
 	//
+	struct node *before;
 	if(index==0) {
-		before=curr->next;
-		free_fptr(curr);
-		ll->head=before;
+		before=curr;
+		curr=curr->next;
+		free_fptr(before);
+		before=NULL;
+		curr->prev=NULL;
+		ll->head=curr;
 		ll->size-=1;
 		return true;
 	}
-	
-	
-	
-	while(index>0) {
-		/*if(curr==NULL) { 
-			return false;
-		}*/
-		before=curr;
-		curr=curr->next;
-		index-=1;
+	size_t tmpSize= ll->size/2;
+	size_t tmpIndex=ll->size-1;
+	if(index<=tmpSize) {
+		while(index>0) {
+			/*if(curr==NULL) { 
+			 * return false;
+			 * }*/
+			before=curr;
+			curr=curr->next;
+			index-=1;
+		}
+		before->next=curr->next;
+		curr->next->prev=before;
+		free_fptr(curr);
+		ll->size-=1;
 	}
-	before->next=curr->next;
-	free_fptr(curr);
-	ll->size-=1;
+	else {
+		curr=ll->tail;
+		before=curr->prev;
+		while(tmpIndex!=index) {
+				curr=before;
+				before=curr->prev;
+				tmpIndex-=1;
+		}
+		before->next=curr->next;
+		curr->next->prev=before;
+		free_fptr(curr);
+		ll->size-=1;
+	}
+	//free_fptr(before); //dangling pointer
+	//before=NULL;
+	//free_fptr(malloc_fptr);
+	//malloc_fptr=NULL;
 	return true;
 }
 
@@ -321,6 +394,8 @@ struct iterator *linked_list_create_iterator(struct linked_list *ll,size_t index
         }
 	struct iterator *i1=malloc_fptr(sizeof(struct iterator));
 	if(i1==NULL) {
+		free_fptr(i1);
+		i1=NULL;
 		return NULL;
 	}
 	struct node *curr=ll->head;
@@ -328,6 +403,8 @@ struct iterator *linked_list_create_iterator(struct linked_list *ll,size_t index
 	i1->current_index=index;
 	i1->data=curr->data;
 	i1->current_node=ll->head;
+	//free_fptr(malloc_fptr);
+   	//malloc_fptr=NULL;
 	return i1;
  }
 

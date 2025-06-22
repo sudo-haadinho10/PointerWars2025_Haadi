@@ -12,16 +12,18 @@ struct node;
 struct linked_list {
 	struct node * head;
 	size_t size;
+	struct node *tail;	
 };
 
 struct node {
 	struct node *next;
 	unsigned int data;
+	struct node *prev;
 };
 
 struct iterator {
 	struct linked_list *ll;
-	struct node * current_node;
+ 	struct node * current_node;
 	size_t current_index; //stddef.h
 	unsigned int data;
 };
