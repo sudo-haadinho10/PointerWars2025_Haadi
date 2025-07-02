@@ -90,8 +90,8 @@ bool queue_push(struct queue *queue,unsigned int data) {
 	//queue->head=queue->ll->head;
 	//queue->tail=queue->ll->tail;
 	//
-	printf("%d ",queue->ll->head->data);
-	printf("%lu ",queue->ll->size);
+	//printf("%d ",queue->ll->head->data);
+	//printf("%lu ",queue->ll->size);
 	return true;
 }
 
@@ -115,15 +115,12 @@ bool queue_pop(struct queue * queue, unsigned int * popped_data) {
 		return false;
 	}
 
-	printf("size of queue\n%lu " ,queue_size(queue));
+	//printf("size of queue\n%lu " ,queue_size(queue));
 
 	//if(queue_size(queue)>=1) {
 		//if(*popped_data == queue->ll->head->data) {
 		//
-		//
-			//printf("hello ");
 			*popped_data=(queue->ll->head->data);
-			printf("%d ",*popped_data);
 			if(!(linked_list_remove(queue->ll,0))) return false;
 			return true;
 	//	}
