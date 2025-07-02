@@ -120,9 +120,9 @@ bool queue_pop(struct queue * queue, unsigned int * popped_data) {
 	//if(queue_size(queue)>=1) {
 		//if(*popped_data == queue->ll->head->data) {
 		//
-			*popped_data=(queue->ll->head->data);
-			if(!(linked_list_remove(queue->ll,0))) return false;
-			return true;
+	*popped_data=(queue->ll->head->data);
+	if(!(linked_list_remove(queue->ll,0))) return false;
+	return true;
 	//	}
 	//return false;
 }
@@ -178,8 +178,8 @@ bool queue_next(struct queue * queue, unsigned int * popped_data) {
 	}*/
 	if(queue_size(queue)>=1) {
 	//	if(queue->ll->tail->data==*popped_data) {
-			*popped_data=queue->ll->head->data;
-			return true;
+		*popped_data=queue->ll->head->data;
+		return true;
 	//}
 		//return true;
 	}
