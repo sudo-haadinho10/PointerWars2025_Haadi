@@ -41,9 +41,9 @@ struct queue *queue_create(void) {
         //}
 	q->ll = linked_list_create();
 	if(q->ll==NULL) {
+		free(q);
 		return NULL;
 	}
-	
 	return q;
 }
 
