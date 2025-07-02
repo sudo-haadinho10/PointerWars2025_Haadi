@@ -60,6 +60,7 @@ bool queue_delete(struct queue *queue) {
 		return false;
 	}
 	if(queue->ll==NULL) {
+		free_fptr(queue);
 		return false;
 	}
 	bool status = linked_list_delete(queue->ll);
@@ -67,7 +68,6 @@ bool queue_delete(struct queue *queue) {
 		return false;
 	}
 	free_fptr(queue);
-	queue=NULL;
 	return true;
 }
 
