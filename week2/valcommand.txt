@@ -1,1 +1,2 @@
-valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose ./linkedlist_output2.out --log-file valgrind.txt
+valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose --log-file=valgrind.txt ./linkedlist_output2.out
+
