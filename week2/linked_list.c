@@ -40,6 +40,10 @@ bool linked_list_delete(struct linked_list *ll) {
 	if(ll==NULL) {
 		return false;
 	}
+	if(free_fptr==NULL) {
+		return false;
+        }
+
 	struct node *curr=ll->head;
 	struct node *temp;
 	while(curr!=ll->tail) {
@@ -309,6 +313,9 @@ bool linked_list_remove(struct linked_list *ll,size_t index) {
 	if(malloc_fptr==NULL){
                 return NULL;
         }
+	if(free_fptr==NULL) {
+		return NULL;
+	}
 
 	//Case 1: Invalid index size
 	//
