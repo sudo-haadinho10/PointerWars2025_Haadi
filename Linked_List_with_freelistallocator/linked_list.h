@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define SIZE (size_t) 20
+//#define SIZE (size_t) 20
 
 //linked_list structure declaration
 
@@ -18,11 +18,11 @@
 //	#define align_up(num,align) (((num)+((align)-1)) & ~((align)-1))
 
 
-struct memorypool {
+/*struct memorypool {
 	struct node *pool_start; //Pointer to the big block allocated
 	struct node *free_list_head;
 	size_t capacity; //total number of nodes in our pool
-};
+};*/
 
 //static struct node *free_list;
 
