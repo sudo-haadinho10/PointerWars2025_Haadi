@@ -6,6 +6,7 @@
 static void * (*malloc_fptr)(size_t size) = NULL; //NULL initially points to nothing,holds no valid memory address
 static void   (*free_fptr)(void* addr)    = NULL;
 
+//Global List of Free Node pointers
 static struct node * free_list = NULL;
 
 /*struct memorypool * create_memory_pool(size_t num_nodes) {
@@ -86,6 +87,12 @@ static struct node * free_list = NULL;
 }*/
 
 
+
+// Reuses free nodes from the global free list if available , else uses malloc_fptr to allocate a node.
+// \param ll   : Pointer to linked_list.
+// Returns a pointer to a node .
+//
+
 struct node* linked_list_create_node (void) {
 	
 	struct node *new_node;
@@ -96,7 +103,7 @@ struct node* linked_list_create_node (void) {
 		new_node = free_list;
 		free_list = free_list->next;
 	}
-	//The free list is empty , allocate using malloc
+	//Case 2 The free list is empty , allocate using malloc
 	//
 	else {
 		if(malloc_fptr==NULL) return NULL;
@@ -109,6 +116,11 @@ struct node* linked_list_create_node (void) {
 	return new_node;
 }
 
+// Pushes a pointer to a node to the global free list
+// \param node   : Pointer to a node.
+// Returns true on success false otherwise.
+//
+
 bool linked_list_delete_node (struct node *node) {
 	if(node == NULL) {
 		return false;
@@ -118,7 +130,14 @@ bool linked_list_delete_node (struct node *node) {
 	return true;
 }
 
+// Cleanup function to free the global free list of node pointers
+// 
+
 void free_list_cleanup(void) {
+
+	if(free_list == NULL) {
+		return;
+	}
 
 	struct node *temp;
 	while(free_list!=NULL) {
