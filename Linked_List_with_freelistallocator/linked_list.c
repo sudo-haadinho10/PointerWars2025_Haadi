@@ -481,8 +481,10 @@ bool linked_list_remove(struct linked_list *ll,size_t index) {
 		curr=curr->next;
 		//free_fptr(before);
 		//
-		if(!linked_list_delete_node(before)) {
-			return false;                                                                  }
+		if(!linked_list_delete_node(before)) 
+		{
+			return false;
+		}
 		//before=NULL;
 		curr->prev=NULL;
 		ll->head=curr;
