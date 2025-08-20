@@ -1,5 +1,5 @@
 #ifndef LINKED_LIST_H_
-#define LINKED_LIST_H
+#define LINKED_LIST_H_
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -50,7 +50,7 @@ struct iterator {
 
 
 //struct memorypool *create_memory_pool(size_t num_nodes);
-struct node *linked_list_create_node(void);
+//static struct node *linked_list_create_node(void);
 bool linked_list_delete_node(struct node *node);
 void free_list_cleanup(void);
 

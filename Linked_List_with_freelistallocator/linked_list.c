@@ -93,7 +93,7 @@ static struct node * free_list = NULL;
 // Returns a pointer to a node .
 //
 
-struct node* linked_list_create_node (void) {
+static struct node* linked_list_create_node (void) {
 	
 	struct node *new_node;
 
